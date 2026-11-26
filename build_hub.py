@@ -3,7 +3,7 @@
 The combined artifact is hub/index.html (sport switcher) plus these three pages. Each sport's daily run rebuilds its own board,
 runs this script with its sport name, and republishes the hub artifact with only its own file in `files`
 (files left out are kept on the artifact). Usage: python hub/build_hub.py [nba|nfl|nhl ...]   (no args = all three)
-       python hub/build_hub.py --site   refresh docs/ (GitHub Pages copy for aipicks/Daily-Boards) from the hub files, then commit + push docs/
+       python hub/build_hub.py --site   refresh docs/ (GitHub Pages copy for aipicks/DAILY-BOARDS) from the hub files, then commit + push docs/
 """
 import pathlib, sys
 
