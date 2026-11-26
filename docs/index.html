@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Daily Boards</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root { --bg: #051317; --bar: rgba(6, 22, 27, .92); --line: rgba(94, 234, 212, .14); --line2: rgba(94, 234, 212, .32); --fg: #e3f2f0; --muted: #9bb7b8;
+  --acc: #2dd4bf; --acc2: #5eead4; --ink: #032a27; color-scheme: dark; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 500 14px "Inter", "Segoe UI", system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden; }
+.top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-block: calc(10px + env(safe-area-inset-top, 0px)) 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--bar); border-bottom: 1px solid var(--line); }
+.brand { font: 800 19px/1 "Outfit", "Segoe UI", sans-serif; letter-spacing: -.01em; margin-right: 6px; }
+.brand span { color: var(--acc2); }
+.sports { display: flex; gap: 6px; }
+.sports button { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: rgba(13, 36, 43, .66); color: var(--muted);
+  border-radius: 999px; padding: 7px 16px; font: 600 14px "Inter", sans-serif; cursor: pointer; }
+.sports button:hover { color: var(--fg); border-color: var(--line2); }
+.sports button[aria-pressed="true"] { background: var(--acc); border-color: var(--acc); color: var(--ink); }
+.sports svg { width: 16px; height: 16px; flex: none; }
+.note { margin-left: auto; color: var(--muted); font-size: 12px; }
+@media (max-width: 640px) { .note { display: none; } .brand { font-size: 17px; } .sports button { padding: 6px 12px; } }
+.frames { flex: 1; position: relative; min-height: 0; }
+.frames iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: var(--bg); }
+</style>
+</head><body>
+<div class="top">
+  <div class="brand">Daily <span>Boards</span></div>
+  <div class="sports" role="tablist" aria-label="Sport">
+    <button data-s="nba" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18M5.6 5.6c3 2.6 3 10.2 0 12.8M18.4 5.6c-3 2.6-3 10.2 0 12.8"/></svg>NBA</button>
+    <button data-s="nfl" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12c2-6 14-6 16 0-2 6-14 6-16 0z"/><path d="M9 12h6M10.5 10.5v3M12 10.5v3M13.5 10.5v3"/></svg>NFL</button>
+    <button data-s="nhl" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="10" rx="8" ry="3.5"/><path d="M4 10v3.5c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5V10"/></svg>NHL</button>
+  </div>
+  <div class="note">Paper picks, 1 unit each. No guaranteed wins.</div>
+</div>
+<div class="frames" id="frames"></div>
+<script>
+(function () {
+  const SPORTS = ["nba", "nfl", "nhl"], frames = document.getElementById("frames"), made = {};
+  let cur = (location.hash || "").replace("#", "");
+  if (!SPORTS.includes(cur)) { try { cur = localStorage.getItem("hub_sport") || "nba"; } catch (e) { cur = "nba"; } }
+  if (!SPORTS.includes(cur)) cur = "nba";
+  function show(s) {
+    cur = s;
+    if (!made[s]) { const f = document.createElement("iframe"); f.src = s + ".html"; f.title = s.toUpperCase() + " board"; f.loading = "eager"; frames.appendChild(f); made[s] = f; }
+    SPORTS.forEach(k => { if (made[k]) made[k].hidden = k !== s; });
+    document.querySelectorAll(".sports button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === s)));
+    try { localStorage.setItem("hub_sport", s); } catch (e) {}
+  }
+  document.querySelectorAll(".sports button").forEach(b => b.addEventListener("click", () => show(b.dataset.s)));
+  show(cur);
+})();
+</script>
+
+</body></html>
